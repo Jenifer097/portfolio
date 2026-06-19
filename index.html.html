@@ -1,0 +1,309 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); color: var(--color-text-primary); }
+
+.edit-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 100;
+  background: #5340C8; color: #fff; border: none; border-radius: 50px;
+  padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+}
+.edit-btn:hover { background: #3C2FA0; }
+
+.edit-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.4); align-items: center; justify-content: center;
+}
+.edit-overlay.open { display: flex; }
+.edit-box {
+  background: var(--color-background-primary); border-radius: var(--border-radius-lg);
+  border: 0.5px solid var(--color-border-tertiary); padding: 24px; width: 94%; max-width: 480px;
+  max-height: 85vh; overflow-y: auto;
+}
+.edit-box h2 { font-size: 16px; font-weight: 500; margin-bottom: 16px; }
+.edit-box label { font-size: 12px; color: var(--color-text-secondary); display: block; margin-bottom: 4px; margin-top: 12px; }
+.edit-box input, .edit-box textarea {
+  width: 100%; padding: 8px 10px; border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md); font-size: 13px; font-family: var(--font-sans);
+  color: var(--color-text-primary); background: var(--color-background-primary);
+}
+.edit-box textarea { resize: vertical; min-height: 60px; }
+.edit-actions { display: flex; gap: 8px; margin-top: 16px; }
+.btn-save { background: #5340C8; color: #fff; border: none; border-radius: var(--border-radius-md); padding: 8px 18px; font-size: 13px; cursor: pointer; font-weight: 500; }
+.btn-cancel { background: none; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 18px; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); }
+
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px; border-bottom: 0.5px solid var(--color-border-tertiary);
+  position: sticky; top: 0; background: var(--color-background-primary); z-index: 10;
+}
+.nav-logo { font-size: 16px; font-weight: 500; letter-spacing: -0.3px; }
+.nav-logo span { color: #5340C8; }
+.nav-links { display: flex; gap: 24px; }
+.nav-links a { font-size: 13px; color: var(--color-text-secondary); text-decoration: none; }
+.nav-links a:hover { color: var(--color-text-primary); }
+
+.hero {
+  padding: 64px 32px 48px; max-width: 720px;
+}
+.hero-badge {
+  display: inline-block; background: #EEEDFE; color: #3C3489;
+  font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 50px;
+  margin-bottom: 20px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.hero h1 {
+  font-size: 40px; font-weight: 500; line-height: 1.15; letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+.hero h1 em { font-style: normal; color: #5340C8; }
+.hero p {
+  font-size: 15px; color: var(--color-text-secondary); line-height: 1.7; max-width: 520px; margin-bottom: 28px;
+}
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  background: #5340C8; color: #fff; border: none; border-radius: var(--border-radius-md);
+  padding: 10px 22px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none;
+}
+.btn-outline {
+  background: none; color: var(--color-text-primary); border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md); padding: 10px 22px; font-size: 14px; cursor: pointer; text-decoration: none;
+}
+
+section { padding: 40px 32px; border-top: 0.5px solid var(--color-border-tertiary); }
+.section-label { font-size: 11px; color: var(--color-text-secondary); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 24px; font-weight: 500; }
+
+.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 12px; }
+.info-card {
+  background: var(--color-background-secondary); border-radius: var(--border-radius-md);
+  padding: 14px 16px;
+}
+.info-card .ic-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.info-card .ic-value { font-size: 14px; font-weight: 500; }
+.info-card a { color: #5340C8; text-decoration: none; }
+
+.skills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-pill {
+  font-size: 12px; padding: 5px 14px; border-radius: 50px;
+  background: #EEEDFE; color: #3C3489; font-weight: 500;
+}
+
+.exp-card {
+  background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 12px;
+}
+.exp-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.exp-title { font-size: 15px; font-weight: 500; }
+.exp-type { font-size: 11px; background: #E1F5EE; color: #085041; padding: 3px 10px; border-radius: 50px; }
+.exp-company { font-size: 13px; color: var(--color-text-secondary); }
+
+.proj-card {
+  background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 12px;
+}
+.proj-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.proj-name { font-size: 15px; font-weight: 500; }
+.proj-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 14px; }
+.tech-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tech-pill {
+  font-size: 11px; padding: 3px 10px; border-radius: 50px;
+  background: var(--color-background-secondary); color: var(--color-text-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.contact-card {
+  background: var(--color-background-secondary); border-radius: var(--border-radius-lg);
+  padding: 16px; display: flex; align-items: center; gap: 12px;
+}
+.contact-icon {
+  width: 36px; height: 36px; border-radius: 50%; background: #EEEDFE;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.contact-icon i { font-size: 16px; color: #5340C8; }
+.contact-info .ci-label { font-size: 11px; color: var(--color-text-secondary); }
+.contact-info .ci-value { font-size: 13px; font-weight: 500; }
+.contact-info a { color: #5340C8; text-decoration: none; font-size: 12px; }
+
+footer {
+  padding: 24px 32px; border-top: 0.5px solid var(--color-border-tertiary);
+  font-size: 12px; color: var(--color-text-secondary); text-align: center;
+}
+</style>
+
+<nav>
+  <div class="nav-logo">AJ<span>.</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Open to opportunities</div>
+  <h1>Hi, I'm <em>Arockia Jenifer J</em></h1>
+  <p id="hero-tagline">BCA graduate passionate about digital marketing and building intelligent tech solutions. Turning ideas into impactful digital experiences.</p>
+  <div class="hero-cta">
+    <a class="btn-primary" href="#contact">Get in touch</a>
+    <a class="btn-outline" href="#projects">View projects</a>
+  </div>
+</div>
+
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="about-grid">
+    <div class="info-card">
+      <div class="ic-label">Degree</div>
+      <div class="ic-value" id="degree">Bachelor of Computer Applications (BCA)</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Status</div>
+      <div class="ic-value">Fresher · Available Now</div>
+    </div>
+  </div>
+  <div style="margin-top: 20px;">
+    <div class="section-label">Skills</div>
+    <div class="skills-row" id="skills-row">
+      <span class="skill-pill">Digital Marketing</span>
+      <span class="skill-pill">Python</span>
+      <span class="skill-pill">Machine Learning</span>
+      <span class="skill-pill">NLP</span>
+      <span class="skill-pill">Scikit-learn</span>
+      <span class="skill-pill">API Integration</span>
+      <span class="skill-pill">Content Strategy</span>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="section-label">Experience</div>
+  <div class="exp-card">
+    <div class="exp-header">
+      <div>
+        <div class="exp-title" id="exp-title">Digital Marketing Specialist</div>
+        <div class="exp-company" id="exp-company">Part-time · Digital Marketing</div>
+      </div>
+      <span class="exp-type">Part-time</span>
+    </div>
+    <div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.6;" id="exp-desc">
+      Managed digital marketing campaigns, content creation, and social media strategy. Gained hands-on experience in SEO, analytics, and online brand building.
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-label">Projects</div>
+  <div class="proj-card">
+    <div class="proj-top">
+      <div class="proj-name" id="proj-name">Fake News Detection System</div>
+      <i class="ti ti-shield-check" aria-hidden="true" style="font-size:20px; color:#5340C8; flex-shrink:0;"></i>
+    </div>
+    <div class="proj-desc" id="proj-desc">A multilingual machine learning-based system that detects fake news and provides users with trustworthy insights. Processes news content in real time using NLP pipelines.</div>
+    <div class="tech-row">
+      <span class="tech-pill">Python</span>
+      <span class="tech-pill">Scikit-learn</span>
+      <span class="tech-pill">NLP</span>
+      <span class="tech-pill">APIs</span>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">Contact</div>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="contact-icon"><i class="ti ti-phone" aria-hidden="true"></i></div>
+      <div class="contact-info">
+        <div class="ci-label">Phone</div>
+        <div class="ci-value" id="contact-phone">7845487224</div>
+      </div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon"><i class="ti ti-mail" aria-hidden="true"></i></div>
+      <div class="contact-info">
+        <div class="ci-label">Email</div>
+        <a id="contact-email" href="mailto:arockiajenifer097@gmail.com">arockiajenifer097@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2024 Arockia Jenifer J · Built with care</footer>
+
+<button class="edit-btn" onclick="document.getElementById('editOverlay').classList.add('open')">
+  <i class="ti ti-edit" aria-hidden="true"></i> Edit portfolio
+</button>
+
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-box">
+    <h2>Edit your portfolio</h2>
+    <label>Hero tagline</label>
+    <textarea id="e-tagline"></textarea>
+    <label>Degree</label>
+    <input type="text" id="e-degree"/>
+    <label>Skills (comma-separated)</label>
+    <input type="text" id="e-skills"/>
+    <label>Job title</label>
+    <input type="text" id="e-exp-title"/>
+    <label>Company / description</label>
+    <input type="text" id="e-exp-company"/>
+    <label>Experience details</label>
+    <textarea id="e-exp-desc"></textarea>
+    <label>Project name</label>
+    <input type="text" id="e-proj-name"/>
+    <label>Project description</label>
+    <textarea id="e-proj-desc"></textarea>
+    <label>Phone</label>
+    <input type="text" id="e-phone"/>
+    <label>Email</label>
+    <input type="text" id="e-email"/>
+    <div class="edit-actions">
+      <button class="btn-save" onclick="applyEdits()">Save changes</button>
+      <button class="btn-cancel" onclick="document.getElementById('editOverlay').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function populateEditForm() {
+  document.getElementById('e-tagline').value = document.getElementById('hero-tagline').textContent;
+  document.getElementById('e-degree').value = document.getElementById('degree').textContent;
+  const skills = Array.from(document.querySelectorAll('#skills-row .skill-pill')).map(s => s.textContent).join(', ');
+  document.getElementById('e-skills').value = skills;
+  document.getElementById('e-exp-title').value = document.getElementById('exp-title').textContent;
+  document.getElementById('e-exp-company').value = document.getElementById('exp-company').textContent;
+  document.getElementById('e-exp-desc').value = document.getElementById('exp-desc').textContent.trim();
+  document.getElementById('e-proj-name').value = document.getElementById('proj-name').textContent;
+  document.getElementById('e-proj-desc').value = document.getElementById('proj-desc').textContent.trim();
+  document.getElementById('e-phone').value = document.getElementById('contact-phone').textContent;
+  document.getElementById('e-email').value = document.getElementById('contact-email').textContent;
+}
+
+document.querySelector('.edit-btn').addEventListener('click', populateEditForm);
+
+function applyEdits() {
+  document.getElementById('hero-tagline').textContent = document.getElementById('e-tagline').value;
+  document.getElementById('degree').textContent = document.getElementById('e-degree').value;
+
+  const skillsInput = document.getElementById('e-skills').value;
+  const skillsArr = skillsInput.split(',').map(s => s.trim()).filter(Boolean);
+  const row = document.getElementById('skills-row');
+  row.innerHTML = skillsArr.map(s => `<span class="skill-pill">${s}</span>`).join('');
+
+  document.getElementById('exp-title').textContent = document.getElementById('e-exp-title').value;
+  document.getElementById('exp-company').textContent = document.getElementById('e-exp-company').value;
+  document.getElementById('exp-desc').textContent = document.getElementById('e-exp-desc').value;
+  document.getElementById('proj-name').textContent = document.getElementById('e-proj-name').value;
+  document.getElementById('proj-desc').textContent = document.getElementById('e-proj-desc').value;
+
+  const phone = document.getElementById('e-phone').value;
+  const email = document.getElementById('e-email').value;
+  document.getElementById('contact-phone').textContent = phone;
+  document.getElementById('contact-email').textContent = email;
+  document.getElementById('contact-email').href = 'mailto:' + email;
+
+  document.getElementById('editOverlay').classList.remove('open');
+}
+</script>
